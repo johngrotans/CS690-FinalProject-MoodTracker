@@ -1,2 +1,2 @@
 # CS690-FinalProject-MoodTracker
-A mood tracker software for logging moods, tracking patterns, and jotting down thoughts.
+A mood tracker program for logging moods, tracking patterns, and jotting down thoughts.
