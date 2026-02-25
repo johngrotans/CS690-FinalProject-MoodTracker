@@ -5,6 +5,7 @@
 
 # dotenv files
 .env
+mood-entries.txt
 
 # User-specific files
 *.rsuser
