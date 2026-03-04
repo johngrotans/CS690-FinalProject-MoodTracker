@@ -58,8 +58,13 @@ public class ConsoleUI
                     }
                 }          
 
+                // Prompt for optional note
+                Console.WriteLine();
+                Console.Write("Add a note or press Enter to skip: ");
+                string note = Console.ReadLine() ?? "";
+
                 // Save input
-                tracker.AddEntry(mood);
+                tracker.AddEntry(mood, note);
                 Console.WriteLine();
                 Console.WriteLine("Mood saved successfully.");
 

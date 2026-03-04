@@ -24,23 +24,24 @@ public class MoodTracker
                 int id = int.Parse(parts[0]);
                 DateTime date = DateTime.ParseExact(parts[1], "yyyyMMdd", null);
                 string mood = parts[2];
-                entries.Add(new MoodEntry(id, date, mood));
+                string note = parts[3];
+                entries.Add(new MoodEntry(id, date, mood, note));
                 nextId = id + 1;
             }
         }
     }
 
     // Add a mood entry and save to file
-    public void AddEntry(string mood)
+    public void AddEntry(string mood, string note)
     {
-        MoodEntry entry = new MoodEntry(nextId, DateTime.Now, mood);
+        MoodEntry entry = new MoodEntry(nextId, DateTime.Now, mood, note);
         entries.Add(entry);
         nextId++;
 
         // Write all entries to file
         List<string> lines = new List<string>();
         foreach (MoodEntry moodEntry in entries)
-            lines.Add(moodEntry.EntryId + ":" + moodEntry.Date.ToString("yyyyMMdd") + ":" + moodEntry.Mood);
+            lines.Add(moodEntry.EntryId + ":" + moodEntry.Date.ToString("yyyyMMdd") + ":" + moodEntry.Mood + ":" + moodEntry.Note);
         File.WriteAllLines(fileName, lines);
     }
 
