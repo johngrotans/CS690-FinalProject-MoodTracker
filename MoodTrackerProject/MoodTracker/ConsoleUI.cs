@@ -67,9 +67,32 @@ public class ConsoleUI
                 tracker.AddEntry(mood, note);
                 Console.WriteLine();
                 Console.WriteLine("Mood saved successfully.");
+                
+            } else if (command == "3") {
+                Console.WriteLine();
+                Console.WriteLine("===== Mood History =====");
 
+                List<MoodEntry> entries = tracker.GetAllEntries();
+
+                // Check if there are any entries
+                if (entries.Count == 0)
+                {
+                    Console.WriteLine("No entries yet. Select option 1 to log daily mood.");
+                }
+                else
+                {
+                    // Display each entry with date, mood, and note
+                    foreach (MoodEntry entry in entries)
+                    {
+                        Console.WriteLine("ID: " + entry.EntryId);
+                        Console.WriteLine("Date: " + entry.Date.ToString("yyyyMMdd"));
+                        Console.WriteLine("Mood: " + entry.Mood);
+                        Console.WriteLine("Note: " + (entry.Note == "" ? "No note" : entry.Note));
+                        Console.WriteLine("========================");
+                    }
+                }
             // Display message depending on input
-            } else if (command == "2" || command == "3" || command == "4") {
+            } else if (command == "2" || command == "4") {
                 Console.WriteLine();
                 Console.WriteLine("To be completed.");
             } else if (command == "5") {
