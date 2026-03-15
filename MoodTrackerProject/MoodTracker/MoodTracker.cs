@@ -45,6 +45,55 @@ public class MoodTracker
         File.WriteAllLines(fileName, lines);
     }
 
+    // Edit entry by ID
+    public void EditEntry(int id, string newMood, string newNote)
+    {
+        foreach (MoodEntry entry in entries)
+        {
+            if (entry.EntryId == id)
+            {
+                entry.Mood = newMood;
+                entry.Note = newNote;
+            }
+        }
+
+        // Save updated entries to file
+        List<string> lines = new List<string>();
+        foreach (MoodEntry moodEntry in entries)
+            lines.Add(moodEntry.EntryId + ":" + moodEntry.Date.ToString("yyyyMMdd") + ":" + moodEntry.Mood + ":" + moodEntry.Note);
+        File.WriteAllLines(fileName, lines);
+    }
+
+    // Delete entry by ID
+    public void DeleteEntry(int id)
+    {
+        foreach (MoodEntry entry in entries)
+        {
+            if (entry.EntryId == id)
+            {
+                entries.Remove(entry);
+                break;
+            }
+        }
+
+        // Save updated entries to file
+        List<string> lines = new List<string>();
+        foreach (MoodEntry moodEntry in entries)
+            lines.Add(moodEntry.EntryId + ":" + moodEntry.Date.ToString("yyyyMMdd") + ":" + moodEntry.Mood + ":" + moodEntry.Note);
+        File.WriteAllLines(fileName, lines);
+    }
+
+    // Check if entry ID exists
+    public bool EntryExists(int id)
+    {
+        foreach (MoodEntry entry in entries)
+        {
+            if (entry.EntryId == id)
+                return true;
+        }
+        return false;
+    }
+
     // Return the full list of entries
     public List<MoodEntry> GetAllEntries()
     {
