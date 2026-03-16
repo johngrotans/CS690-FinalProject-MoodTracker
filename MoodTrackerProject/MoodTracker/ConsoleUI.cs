@@ -12,6 +12,7 @@ public class ConsoleUI
     {
         string command;
         do {
+            Console.Clear();
             // Print the main menu options
             Console.WriteLine();
             Console.WriteLine("========== Mood Tracker ==========");
@@ -67,7 +68,41 @@ public class ConsoleUI
                 tracker.AddEntry(mood, note);
                 Console.WriteLine();
                 Console.WriteLine("Mood saved successfully.");
-                
+                Console.WriteLine("\nPress Enter to continue...");
+                Console.ReadLine();
+            
+            } else if (command == "2") {
+                Console.WriteLine();
+                Console.WriteLine("======== Mood Statistics =========");
+
+                // Get list of entries and pass to MoodStatistics
+                MoodStatistics stats = new MoodStatistics(tracker.GetAllEntries());
+
+                // Check for entries
+                if (tracker.GetAllEntries().Count == 0)
+                {
+                    Console.WriteLine("No entries yet. Select option 1 to log daily mood.");
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    // Display count for each mood
+                    Console.WriteLine("Mood counts:");
+                    Dictionary<string, int> moodCount = stats.GetMoodCount();
+                    foreach (KeyValuePair<string, int> pair in moodCount)
+                    {
+                        Console.WriteLine("  " + pair.Key + ": " + pair.Value);
+                    }
+
+                    // Display most frequent mood
+                    Console.WriteLine();
+                    Console.WriteLine("Most frequent mood: " + stats.GetMostFrequentMood());
+                    Console.WriteLine("==================================");
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
+                }
+
             } else if (command == "3") {
                 Console.WriteLine();
                 Console.WriteLine("========== Mood History ==========");
@@ -78,6 +113,8 @@ public class ConsoleUI
                 if (entries.Count == 0)
                 {
                     Console.WriteLine("No entries yet. Select option 1 to log daily mood.");
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
                 }
                 else
                 {
@@ -90,104 +127,134 @@ public class ConsoleUI
                         Console.WriteLine("Note: " + (entry.Note == "" ? "No note" : entry.Note));
                         Console.WriteLine("==================================");
                     }
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
                 }
-
             } else if (command == "4") {
                 Console.WriteLine();
                 Console.WriteLine("====== Manage Mood Entries =======");
-                Console.WriteLine("1. Edit Entry");
-                Console.WriteLine("2. Delete Entry");
-                Console.WriteLine("3. Back to main menu");
-                Console.WriteLine("==================================");
-                Console.Write("Choose an option (1-3): ");
 
-                string manageInput = Console.ReadLine() ?? "";
-
-                // Edit an existing entry
-                if (manageInput == "1") {
-                Console.WriteLine();
-                Console.Write("Enter ID of the entry to edit: ");
-                string idInput = Console.ReadLine() ?? "";
-                int id;
-
-                // Check if ID is valid
-                if (!int.TryParse(idInput, out id) || !tracker.EntryExists(id)) {
-                    Console.WriteLine();
-                    Console.WriteLine("Entry not found.");
-                } else {
-                    string newMood = "";
-
-                    // Keep asking until valid mood is selected
-                    while (true) {
-                    Console.WriteLine();
-                    Console.WriteLine("======== Select new mood =========");
-                    Console.WriteLine("  1. Happy");
-                    Console.WriteLine("  2. Sad");
-                    Console.WriteLine("  3. Tired");
-                    Console.WriteLine("  4. Awake");
-                    Console.WriteLine("  5. Stressed");
-                    Console.WriteLine("  6. Calm");
+                if (tracker.GetAllEntries().Count == 0)
+                {
+                    Console.WriteLine("No entries yet. Select option 1 to log daily mood.");
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("1. Edit Entry");
+                    Console.WriteLine("2. Delete Entry");
+                    Console.WriteLine("3. Back to main menu");
                     Console.WriteLine("==================================");
-                    Console.Write("Choose a mood (1-6): ");
 
-                    string moodInput = Console.ReadLine() ?? "";
+                    // Show available entries
+                    List<MoodEntry> entries = tracker.GetAllEntries();
+                    Console.WriteLine("Available entries:");
+                    foreach (MoodEntry entry in entries)
+                    {
+                        Console.WriteLine("  ID " + entry.EntryId + " - " + entry.Date.ToString("yyyyMMdd") + " - " + entry.Mood);
+                    }   
+                
+                    Console.WriteLine("==================================");
+                    Console.Write("Choose an option (1-3): ");
 
-                    if (moodInput == "1") { newMood = "Happy"; break; }
-                    else if (moodInput == "2") { newMood = "Sad"; break; }
-                    else if (moodInput == "3") { newMood = "Tired"; break; }
-                    else if (moodInput == "4") { newMood = "Awake"; break; }
-                    else if (moodInput == "5") { newMood = "Stressed"; break; }
-                    else if (moodInput == "6") { newMood = "Calm"; break; }
-                    else {
+                    string manageInput = Console.ReadLine() ?? "";
+
+                    // Edit an existing entry
+                    if (manageInput == "1") {
                         Console.WriteLine();
-                        Console.WriteLine("Invalid option. Please try again.");
-                    }
-                }
+                        Console.Write("Enter ID of the entry to edit: ");
+                        string idInput = Console.ReadLine() ?? "";
+                        int id;
 
-                // Ask for updated note
-                Console.WriteLine();
-                Console.Write("Enter new note (or press Enter to skip): ");
-                string newNote = Console.ReadLine() ?? "";
+                        // Check if ID is valid
+                        if (!int.TryParse(idInput, out id) || !tracker.EntryExists(id)) {
+                            Console.WriteLine();
+                            Console.WriteLine("Entry not found.");
+                            Console.WriteLine("\nPress Enter to continue...");
+                            Console.ReadLine();
+                        } else {
+                            string newMood = "";
 
-                tracker.EditEntry(id, newMood, newNote);
-                Console.WriteLine();
-                Console.WriteLine("Mood updated successfully.");
-            }
+                            // Keep asking until valid mood is selected
+                            while (true) {
+                                Console.WriteLine();
+                                Console.WriteLine("======== Select new mood =========");
+                                Console.WriteLine("  1. Happy");
+                                Console.WriteLine("  2. Sad");
+                                Console.WriteLine("  3. Tired");
+                                Console.WriteLine("  4. Awake");
+                                Console.WriteLine("  5. Stressed");
+                                Console.WriteLine("  6. Calm");
+                                Console.WriteLine("==================================");
+                                Console.Write("Choose a mood (1-6): ");
 
-            // Delete an existing entry
-            } else if (manageInput == "2") {
-                Console.WriteLine();
-                Console.Write("Enter ID of the entry to delete: ");
-                string idInput = Console.ReadLine() ?? "";
-                int id;
+                                string moodInput = Console.ReadLine() ?? "";
 
-                // Check if ID is valid
-                if (!int.TryParse(idInput, out id) || !tracker.EntryExists(id)) {
-                Console.WriteLine();
-                Console.WriteLine("Entry not found.");
-                } else {
-                    tracker.DeleteEntry(id);
+                                if (moodInput == "1") { newMood = "Happy"; break; }
+                                else if (moodInput == "2") { newMood = "Sad"; break; }
+                                else if (moodInput == "3") { newMood = "Tired"; break; }
+                                else if (moodInput == "4") { newMood = "Awake"; break; }
+                                else if (moodInput == "5") { newMood = "Stressed"; break; }
+                                else if (moodInput == "6") { newMood = "Calm"; break; }
+                                else {
+                                    Console.WriteLine();
+                                    Console.WriteLine("Invalid option. Please try again.");
+                                }   
+                            }      
+
+                            // Ask for updated note
+                            Console.WriteLine();
+                            Console.Write("Enter new note (or press Enter to skip): ");
+                            string newNote = Console.ReadLine() ?? "";
+                            tracker.EditEntry(id, newMood, newNote);
+                            Console.WriteLine();
+                            Console.WriteLine("Mood updated successfully.");
+                            Console.WriteLine("\nPress Enter to continue...");
+                            Console.ReadLine();
+                        }   
+
+                    // Delete an existing entry
+                    } else if (manageInput == "2") {
                     Console.WriteLine();
-                    Console.WriteLine("Entry deleted successfully.");
+                    Console.Write("Enter ID of the entry to delete: ");
+                    string idInput = Console.ReadLine() ?? "";
+                    int id;
+
+                    // Check if ID is valid
+                    if (!int.TryParse(idInput, out id) || !tracker.EntryExists(id)) {
+                        Console.WriteLine();
+                        Console.WriteLine("Entry not found.");
+                        Console.WriteLine("\nPress Enter to continue...");
+                        Console.ReadLine();
+
+                    } else {
+                        tracker.DeleteEntry(id);
+                        Console.WriteLine();
+                        Console.WriteLine("Entry deleted successfully.");
+                        Console.WriteLine("\nPress Enter to continue...");
+                        Console.ReadLine();
+                    }
+
+                } else if (manageInput == "3") {
+                    
+                    // Go back to main menu
+                    } else {
+                        Console.WriteLine();
+                        Console.WriteLine("Invalid option.");
+                        Console.WriteLine("\nPress Enter to continue...");
+                        Console.ReadLine();
+                    }   
                 }
 
-            } else if (manageInput == "3") {
-                // Go back to main menu
-                } else {
-                Console.WriteLine();
-                Console.WriteLine("Invalid option.");
-                }
-
-            // Display message depending on input
-            } else if (command == "2") {
-                Console.WriteLine();
-                Console.WriteLine("To be completed.");
             } else if (command == "5") {
                 Console.WriteLine();
                 Console.WriteLine("Goodbye!");
             } else {
                 Console.WriteLine();
                 Console.WriteLine("Invalid option. Please enter a number from 1 to 5.");
+                Console.WriteLine("\nPress Enter to continue...");
+                Console.ReadLine();
             }
         } while (command != "5");
     }
