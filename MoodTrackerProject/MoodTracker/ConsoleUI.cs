@@ -1,5 +1,7 @@
 namespace MoodTracker;
+using System.Diagnostics.CodeAnalysis; // To use ExcludeFromCodeCoverage
 
+[ExcludeFromCodeCoverage] // Excluding ConsoleUI.cs from test coverage
 public class ConsoleUI
 {
     MoodTracker tracker;
